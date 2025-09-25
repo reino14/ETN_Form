@@ -1,0 +1,129 @@
+html {
+  scroll-behavior: smooth;
+}
+
+body{
+  font-family: "Poppins", sans-serif;
+
+  font-style: normal;
+  overflow-x: hidden;
+}
+
+/* --------------------------------------------------FONT-------------------------------------------------------------- */
+/* reset warna font */
+.text-green-custom-100 {
+  color: #62c648;
+}
+
+.text-green-custom-200 {
+  color: #6aa26d;
+}
+
+.text-green-custom-300 {
+  color: #579067;
+}
+
+.text-green-custom-400 {
+  color: #2e7b34;
+}
+
+.text-green-custom-400-nohover {
+  color: #2e7b34;
+}
+
+.text-green-custom-400:hover {
+  color: #62c648;
+}
+
+/* reset warna bakcground */
+
+.bg-green-custom-100 {
+  background-color: #62c648;
+}
+
+.bg-green-custom-100:hover {
+  background-color: black;
+  color: #62c648;
+}
+
+.bg-green-custom-100-nohover {
+  background-color: #62c648;
+}
+
+.bg-green-custom-100-transparent {
+  background-color: #62c648;
+  opacity: 20%;
+}
+
+.bg-green-custom-400 {
+  background-color: rgba(46, 123, 52, 0.5); /* 0.5 = 50% transparan */
+  
+}
+
+/* --------------------------------------------------HOME-------------------------------------------------------------- */
+
+@keyframes zoomInOut {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+}
+
+.zoom-in-out {
+  animation: zoomInOut 14s infinite;
+}
+
+.text-overlay {
+  position: absolute;
+  top: 60%;
+  left: 41%;
+  transform: translate(-50%, -50%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.5rem;
+  width: 70%;
+  animation-name: slideLeft;
+  animation-duration: 3s;
+}
+
+@keyframes slideLeft {
+  from {
+    transform: translateY(-50%);
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* --------------------------------------------------ACTIVITIES-------------------------------------------------------------- */
+.parallax {
+  background-size: 150%; /* Initial zoom */
+  background-position: center;
+  transition: background-position 0.1s ease-in-out;
+}
+.parallax-wrapper {
+  height: 500px; /* Fixed height for the image container */
+  overflow: hidden;
+  position: relative;
+}
+.parallax-layer {
+  background-color: rgba(0, 0, 0, 0.691); /* Transparent black layer */
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+/* --------------------------------------------------FORM-------------------------------------------------------------- */
+.modal {
+  transition: opacity 0.3s ease;
+}
+.modal.active {
+  display: flex;
+}

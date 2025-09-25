@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="product" class="max-w-full mx-auto container relative">
+      <!-- Background Section -->
+      <div class="absolute inset-0 bg-cover bg-center bg-black opacity-100" style="background-image: url('./main-bg/profile-bg.jpg')"></div>
+
+      <!-- Overlay for darkening the background -->
+      <div class="absolute inset-0 bg-black opacity-60"></div>
+
+      <!-- Content Section (kept above the background) -->
+      <div class="relative z-10 max-w-screen-lg mx-auto pb-40 px-4 lg:px-0 text-center">
+        <div class="flex flex-col items-center mt-24">
+          <p class="font-medium text-green-custom-100 mt-40 pb-6">Our Product</p>
+          <h1 class="text-xl md:text-3xl text-white font-bold pb-6">Trusted Partner In Supplying Premium-quality Commodities!</h1>
+          <p class="text-white text-sm sm:text-base">PT. Export Tani Nusantara – Top Commodities Supplier in Indonesia</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-14">
+          <!-- Card 1 -->
+          <div class="border-2 shadow-2xl flex flex-col items-center rounded-lg bg-white">
+            <img src="./product-img/kopi.jpg" alt="Coffee Seeds Image" class="h-48 w-full object-cover p-4 rounded-3xl" />
+            <div class="flex flex-col items-center text-center px-6 mt-2">
+              <h2 class="text-3xl text-green-custom-400-nohover font-bold pb-2">Coffee Beans</h2>
+
+              <div class="mt-12 text-center lg:text-left">
+                <div class="flex justify-center lg:justify-start">
+                  <!-- Tombol -->
+                  <a class="openModal bg-green-custom-100 text-white px-4 py-2 rounded-3xl cursor-pointer" data-tenant="A1"> Download Catalogue Coffee Beans </a>
+                </div>
+              </div>
+
+              <div class="mt-8 mb-10">
+                <a href="https://wa.me/6281212851807" class="font-bold xl:text-md text-white rounded-3xl rounded-tl-none rounded-br-none px-7 py-3 bg-green-custom-100 hover:text-green-custom-100 text-sm transition duration-300">
+                  Quote Now!
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="border-2 shadow-2xl flex flex-col items-center rounded-lg bg-white">
+            <img src="./product-img/healthychip(4).jpg" alt="Healthy Chips Image" class="h-48 w-full object-cover p-4 rounded-3xl" />
+            <div class="flex flex-col items-center text-center px-6 mt-2">
+              <h2 class="text-3xl text-green-custom-400-nohover font-bold pb-2">Healthy Chips</h2>
+
+              <div class="mt-12 text-center lg:text-left">
+                <div class="flex justify-center lg:justify-start">
+                  <a class="openModal bg-green-custom-100 text-white px-4 py-2 rounded-3xl cursor-pointer" data-tenant="A2"> Download Catalogue Healthy Chips </a>
+                </div>
+              </div>
+
+              <div class="mt-8 mb-10">
+                <a href="https://wa.me/6281212851807" class="font-bold xl:text-md text-white rounded-3xl rounded-tl-none rounded-br-none px-7 py-3 bg-green-custom-100 hover:text-green-custom-100 text-sm transition duration-300">
+                  Quote Now!
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="border-2 shadow-2xl flex flex-col items-center rounded-lg bg-white">
+            <img src="./product-img/spices.jpg" alt="Spices Image" class="h-48 w-full object-cover p-4 rounded-3xl" />
+            <div class="flex flex-col items-center text-center px-6 mt-2">
+              <h2 class="text-3xl text-green-custom-400-nohover font-bold pb-2">Spices</h2>
+
+              <div class="mt-12 text-center lg:text-left">
+                <div class="flex justify-center lg:justify-start">
+                  <a class="openModal bg-green-custom-100 text-white px-4 py-2 rounded-3xl cursor-pointer" data-tenant="A3"> Download Catalogue Spices </a>
+                </div>
+              </div>
+
+              <div class="mt-8 mb-10">
+                <a href="https://wa.me/6281212851807" class="font-bold xl:text-md text-white rounded-3xl rounded-tl-none rounded-br-none px-7 py-3 bg-green-custom-100 hover:text-green-custom-100 text-sm transition duration-300">
+                  Quote Now!
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal (hanya 1, reusable) -->
+    <div id="registerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white p-6 rounded-lg max-w-lg w-full relative">
+        <!-- Tombol Close -->
+        <button id="closeModal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-xl font-bold">&times;</button>
+
+        <h5 id="modalTitle" class="text-xl font-bold mb-4">Request Catalogue</h5>
+        <form id="registerForm" action="./database/insert1.php" method="POST" class="space-y-4">
+          <!-- Tenant ID otomatis diisi dari tombol -->
+          <input type="hidden" id="tenant_id" name="tenant_id" />
+
+          <input type="text" name="nama" placeholder="Name" class="w-full border p-2 rounded" required />
+          <input type="text" name="telepon" placeholder="Phone" class="w-full border p-2 rounded" required />
+          <input type="email" name="email" placeholder="Email" class="w-full border p-2 rounded" required />
+          <input type="text" name="perusahaan" placeholder="Company" class="w-full border p-2 rounded" required />
+
+          <button type="submit" class="bg-green-custom-100 text-white px-4 py-2 rounded-3xl w-full">Get Catalogue</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
