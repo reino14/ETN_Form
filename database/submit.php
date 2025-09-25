@@ -1,51 +1,82 @@
 <?php
-// ====== STEP 1: Ambil Tenant Access Token ======
-$app_id = "cli_a85ffa249c789e1a";
-$app_secret = "M7LwDuwSsSoA818xMGmy9gosWplI3PpJ";
+// ---------------- CONFIG ----------------
+define('LARK_APP_ID',     'cli_a85ffa249c789e1a'); // ganti sesuai App ID
+define('LARK_APP_SECRET', 'M7LwDuwSsSoA818xMGmy9gosWplI3PpJ'); // ganti sesuai App Secret
+define('LARK_BASE_ID',    'PgPkbs8gLahOwasWB1UjI5iPjpd'); // dari URL base
+define('LARK_TABLE_ID',   'tbl6gvO1p1WUUFkw'); // dari URL table
 
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, "https://open.larksuite.com/open-apis/auth/v3/tenant_access_token/internal/");
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
-    "app_id" => $app_id,
-    "app_secret" => $app_secret
-]));
+// ---------------- STEP 1: Ambil Tenant Token ----------------
+function getTenantAccessToken() {
+    $url = 'https://open.larksuite.com/open-apis/auth/v3/tenant_access_token/internal';
+    $payload = json_encode([
+        'app_id' => LARK_APP_ID,
+        'app_secret' => LARK_APP_SECRET
+    ]);
 
-$response = curl_exec($ch);
-curl_close($ch);
-$data = json_decode($response, true);
-$token = $data["tenant_access_token"];
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+    $resp = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
 
-// ====== STEP 2: Insert ke Lark Base ======
-$table_id = "tbl6gvO1p1WUUFkw"; 
-$base_id = "PgPkbs8gLahOwasWB1UjI5iPjpd"; 
+    echo "<pre>Token Response ($httpCode):\n$resp\n</pre>";
 
-$api_url = "https://open.larksuite.com/open-apis/bitable/v1/apps/$base_id/tables/$table_id/records";
+    $j = json_decode($resp, true);
+    return $j['tenant_access_token'] ?? false;
+}
 
-// Ambil dari form
-$newRecord = [
-    "fields" => [
-        "Tenant ID"  => $_POST['tenant_id'],
-        "Nama"       => $_POST['nama'],
-        "Telepon"    => $_POST['telepon'],
-        "Email"      => $_POST['email'],
-        "Perusahaan" => $_POST['perusahaan']
-    ]
+// ---------------- STEP 2: Insert Record ----------------
+function createRecord($token, $fieldsArray) {
+    $url = "https://open.larksuite.com/open-apis/bitable/v1/apps/" . LARK_BASE_ID . "/tables/" . LARK_TABLE_ID . "/records";
+    $payload = json_encode([
+        'fields' => $fieldsArray
+    ]);
+
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Authorization: Bearer $token",
+        "Content-Type: application/json"
+    ]);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+    $resp = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    echo "<pre>Create Record Response ($httpCode):\n$resp\n</pre>";
+}
+
+// ---------------- MAIN ----------------
+$nama       = $_POST['nama'] ?? '';
+$telepon    = $_POST['telepon'] ?? '';
+$email      = $_POST['email'] ?? '';
+$perusahaan = $_POST['perusahaan'] ?? '';
+$tenant_id  = $_POST['tenant_id'] ?? '';
+
+if (empty($nama) || empty($telepon) || empty($email) || empty($perusahaan)) {
+    die("⚠️ All fields are required!");
+}
+
+// STEP 1: ambil token
+$token = getTenantAccessToken();
+if (!$token) {
+    die("❌ Gagal ambil tenant_access_token. Cek App ID & App Secret.");
+}
+
+// STEP 2: buat record di Lark Bitable
+$fields = [
+    "Tenant ID" => $tenant_id,
+    "Nama"      => $nama,
+    "Telepon"   => $telepon,
+    "Email"     => $email,
+    "Perusahaan"=> $perusahaan
 ];
 
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $api_url);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    "Authorization: Bearer $token",
-    "Content-Type: application/json"
-]);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(["records" => [$newRecord]]));
+createRecord($token, $fields);
 
-$result = curl_exec($ch);
-curl_close($ch);
-
-echo $result;
+echo "<p>✅ Script selesai dieksekusi.</p>";
+?>
