@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Form Input ke Lark</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #formContainer {
+      display: none;
+      margin-top: 20px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      width: 300px;
+    }
+    input, button {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Integrasi Form ke Lark</h2>
+
+  <button onclick="toggleForm()">Tambah Data</button>
+
+  <div id="formContainer">
+    <form id="larkForm">
+      <input type="text" name="tenant_id" placeholder="Tenant ID" required>
+      <input type="text" name="nama" placeholder="Nama" required>
+      <input type="text" name="telepon" placeholder="Telepon">
+      <input type="email" name="email" placeholder="Email">
+      <input type="text" name="perusahaan" placeholder="Perusahaan">
+      <button type="submit">Kirim</button>
+      <button type="button" onclick="toggleForm()">Tutup</button>
+    </form>
+  </div>
+
+  <div id="result"></div>
+
+  <script>
+    function toggleForm() {
+      const form = document.getElementById('formContainer');
+      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    document.getElementById('larkForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+
+      const response = await fetch("submit.php", {
+        method: "POST",
+        body: formData
+      });
+
+      const result = await response.text();
+      document.getElementById('result').innerText = result;
+      this.reset();
+      toggleForm();
+    });
+  </script>
+</body>
+</html>
